@@ -1,49 +1,41 @@
 const CustomError = require("../extensions/custom-error");
 
-module.exports = function transform( /* arr */ ) {
-   throw new CustomError('Not implemented');
-  // remove line with error and write your code here
-  /*
+module.exports = function transform(  arr  ) {
   if (!Array.isArray(arr)) {
     throw new Error('arr is not Array');
   }
 
   const discard_next = `--discard-next`;
   const discard_prev = `--discard-prev`;
-  const double_next = `--double-prev`;
+  const double_next = `--double-next`;
   const double_prev = `--double-prev`;
 
   let res = [];
-  if ( arr.indexOf( discard_next ) !== -1 ) {
-    return get_discard_next(arr, arr.indexOf( discard_next ) );
-  } else if ( arr.indexOf( discard_prev ) !== -1 ) {
-    return get_discard_prev(arr, arr.indexOf( discard_prev ) );
-  } else if ( arr.indexOf( double_next ) !== -1 ) {
-    return get_double_next(arr, arr.indexOf( double_next ) );
-  } else if ( arr.indexOf( double_prev ) !== -1 ) {
-    return get_double_prev(arr, arr.indexOf( double_prev ) );
+  let elem;
+  let lastIndAdd;
+
+  for ( let i = 0; i < arr.length; i++ ) {
+    elem = arr[i];
+    if ( elem === discard_next ) {
+      ++i;
+    } else if ( elem === discard_prev ) {
+      if ( i - 1 === lastIndAdd ) {
+        res.pop();
+      }
+    } else if ( elem === double_next ) {
+      if ( ++i < arr.length ) {
+        res.push( arr[i], arr[i] );
+        lastIndAdd = i;
+      }
+    } else if ( elem === double_prev ) {
+      if (  res.length > 0 && i > 0 && i - 1 === lastIndAdd ) {
+        res.push( res[ res.length - 1 ] );
+        lastIndAdd++;
+      }
+    } else {
+      res.push( elem );
+      lastIndAdd = i;
+    }
   }
   return res;
-  */
 };
-
-function get_discard_next( arr, ind ) {
-  let res = arr.concat();
-  res.splice(ind, 2);
-  return res;
-}
-function get_discard_prev( arr, ind ) {
-  let res = arr.concat();
-  res.splice(ind - 1, 2);
-  return res;
-}
-function get_double_next( arr, ind ) {
-  let res = arr.concat();
-  res.splice(ind, 1);
-  return res.map( (elem, index) => index === ind ? elem * 2 : elem );
-}
-function get_double_prev( arr, ind ) {
-  let res = arr.concat();
-  res.splice(ind, 1);
-  return res.map( (elem, index) => index - 1 === ind ? elem * 2 : elem );
-}
